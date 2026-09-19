@@ -6,26 +6,31 @@
 velh     = 0;   // Velocidade horizontal
 velh_max = 1;   // Vel horizontal máxima
 
-// Variáveis de input
-right = noone;
-left  = noone;
-jump  = noone;
+// Variáveis de inputs
+right = 0;   // Direita
+left  = 0;   // Esquerda
+jump  = 0;   // Pulo
 
 #endregion
 
 #region Métodos
 
-// Método de movimentação
-movimento = function ()
+// Método para pegar inputs
+inputs_pega = function()
 {
-    // Pegando os inputs
-    var _right = keyboard_check(vk_right);  // Direita
-    var _left  = keyboard_check(vk_left);   // Esquerda
-    
+    // Inputs
+    right = keyboard_check(vk_right);   // Seta direita
+    left  = keyboard_check(vk_left);    // Seta esquerda
+    space = keyboard_check(vk_space);   // Espaço
+}
+
+// Método de movimentação
+movimento = function()
+{
     // Aplicando os inputs na velh
-    velh = (_right - _left) * velh_max;
+    velh = (right - left) * velh_max;
     
-    // Aplicando a velocidade no eixo x
-    x += velh;
+    // Usando o move and collide
+    move_and_collide(velh, 0, obj_colisao, 4);
 }
 #endregion

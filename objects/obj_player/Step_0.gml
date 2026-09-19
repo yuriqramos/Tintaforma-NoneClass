@@ -1,1 +1,3 @@
 movimento();
+
+inputs_pega();
