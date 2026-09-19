@@ -3,8 +3,14 @@
 #region Variáveis
 
 // Variáveis de movimento
-velh     = 0;   // Velocidade horizontal
-velh_max = 1;   // Vel horizontal máxima
+velh     = 0;     // Velocidade horizontal
+velh_max = 1;     // Vel horizontal máxima
+velv     = 0;     // Velocidade vertical
+velv_max = 4;     // Vel vertical máxima
+grav     = 0.2;   // Gravidade
+
+// Variáveis de level
+chao = false;
 
 // Variáveis de inputs
 right = 0;   // Direita
@@ -30,7 +36,28 @@ movimento = function()
     // Aplicando os inputs na velh
     velh = (right - left) * velh_max;
     
-    // Usando o move and collide
-    move_and_collide(velh, 0, obj_colisao, 4);
+    // Se chão for falso
+    if(!chao)   
+    {
+        // Aplica a gravidade na vel vertical
+        velv += grav;
+    }
+    else
+    {
+        // Zera a vel vertical para não acumular vel horizontal
+        velv = 0;
+    }
+    
+    // Usando o move and collide horizontal
+    move_and_collide(velh, 0, obj_colisao, 24);
+    
+    // Usando o move and collide vertical
+    move_and_collide(0, velv, obj_colisao, 24);
+}
+
+// Checa se estão tocando no chão
+chao_checa = function()
+{
+    chao = place_meeting(x, y + 1, obj_colisao);
 }
 #endregion
