@@ -75,6 +75,9 @@ chao_checa = function()
 // Método de debug
 debug_roda = function()
 { 
+    // Não roda se DEBUG MODE for falso
+    if(!DEBUG_MODE) return;
+        
     // Cria uma view para o debug
     view_player = dbg_view("View player 1", global.debug, 40, 40, 300, 400);
     
