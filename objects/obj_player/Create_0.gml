@@ -17,6 +17,9 @@ right = 0;   // Direita
 left  = 0;   // Esquerda
 jump  = 0;   // Pulo
 
+// Variáveis dos estados
+estado = noone;   // Estado atual
+
 #endregion
 
 #region Métodos
@@ -27,7 +30,7 @@ inputs_pega = function()
     // Inputs
     right = keyboard_check(vk_right);   // Seta direita
     left  = keyboard_check(vk_left);    // Seta esquerda
-    space = keyboard_check_pressed(vk_space);   // Espaço
+    jump = keyboard_check(vk_space);   // Espaço
 }
 
 // Método de movimentação
@@ -42,7 +45,7 @@ movimento = function()
         // Aplica a gravidade na vel vertical
         velv += grav;
     }
-    else if(space)
+    else if(jump)
     {
         // Aplica vel para pular
         velv += -velv_max;
@@ -54,8 +57,7 @@ movimento = function()
         
         y = round(y);
     }
-    
-    show_debug_message(y);
+
     // Usando o move and collide horizontal
     move_and_collide(velh, 0, obj_colisao, 24);
     
@@ -68,6 +70,71 @@ chao_checa = function()
 {
     chao = place_meeting(x, y + 1, obj_colisao);
 }
+
+// Função que troca as sprites
+sprite_troca = function(_spr = spr_player_idle)
+{
+    // Se a sprite não for a correta
+    if(sprite_index != _spr)
+    {
+        // Define a sprite
+        sprite_index = _spr;
+        
+        // Zera a animação
+        image_index = 0;
+    }
+}
+
+// Métodos de estados
+
+// Estado parado
+estado_parado = function()
+{
+    // Definindo a sprite
+    sprite_troca(spr_player_idle);
+    
+    // Se move se apertar esquerda ou direita
+    if(left xor right)
+    {
+        // Muda de estado
+        estado = estado_movendo;
+    }
+    
+    // Pulando
+    if(jump)
+    {
+        // Muda de estado
+        estado = estado_pulo;
+    }
+}
+
+// Estado movendo
+estado_movendo = function()
+{
+    // Definindo a sprite
+    sprite_troca(spr_player_move)
+    
+    // Se não se mover mais
+    if(velh == 0)
+    {
+        // Muda de estado
+        estado = estado_parado;
+    }
+}
+
+// Estado pulo
+estado_pulo = function()
+{
+    if(velv < 0)
+    {
+        sprite_troca(spr_player_pulo_cima);
+    }
+    else if(velv > 0)
+    {
+        sprite_troca(spr_player_pulo_baixo);
+    }
+}
+
 #endregion
 
 #region Debug
@@ -121,5 +188,11 @@ debug_ativa = function()
         }
     }
 }
+
+#endregion
+
+#region Rodando no create
+
+estado = estado_parado;   // Rodando o estado atual
 
 #endregion
