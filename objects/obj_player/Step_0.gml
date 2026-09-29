@@ -8,5 +8,3 @@ debug_ativa();
 
 // Rodando o meu estado
 estado();
-
-show_debug_message(string(estado));

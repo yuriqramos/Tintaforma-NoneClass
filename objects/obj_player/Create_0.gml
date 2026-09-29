@@ -30,11 +30,11 @@ inputs_pega = function()
     // Inputs
     right = keyboard_check(vk_right);   // Seta direita
     left  = keyboard_check(vk_left);    // Seta esquerda
-    jump = keyboard_check(vk_space);   // Espaço
+    jump  = keyboard_check(vk_space);   // Espaço
 }
 
-// Método de movimentação
-movimento = function()
+// Método de velocidade
+velocidade_aplica = function()
 {
     // Aplicando os inputs na velh
     velh = (right - left) * velh_max;
@@ -55,9 +55,14 @@ movimento = function()
         // Zera a vel vertical para não acumular vel horizontal
         velv = 0;
         
+        // Arredonda o Y para ficar no chão
         y = round(y);
     }
+}
 
+// Método de movimento
+movimento = function()
+{
     // Usando o move and collide horizontal
     move_and_collide(velh, 0, obj_colisao, 24);
     
@@ -94,7 +99,7 @@ estado_parado = function()
     sprite_troca(spr_player_idle);
     
     // Se move se apertar esquerda ou direita
-    if(left xor right)
+    if(right != left)
     {
         // Muda de estado
         estado = estado_movendo;
@@ -106,11 +111,21 @@ estado_parado = function()
         // Muda de estado
         estado = estado_pulo;
     }
+    
+    //Se não está tocando o chão
+    if(!chao)
+    {
+        // Muda de estado
+        estado = estado_pulo;
+    }
 }
 
 // Estado movendo
 estado_movendo = function()
 {
+    // Função de velocidade
+    velocidade_aplica();
+    
     // Definindo a sprite
     sprite_troca(spr_player_move)
     
@@ -120,18 +135,39 @@ estado_movendo = function()
         // Muda de estado
         estado = estado_parado;
     }
+    
+    // Se estiver pulando
+    if(jump)
+    {
+        // Muda de estado
+        estado = estado_pulo;
+    }
 }
 
 // Estado pulo
 estado_pulo = function()
 {
+    // Função de velocidade
+    velocidade_aplica();
+    
+    // Se estiver subindo
     if(velv < 0)
-    {
+    {   
+        // Define sprite
         sprite_troca(spr_player_pulo_cima);
     }
+    // Se estiver descendo
     else if(velv > 0)
     {
+        // Define sprite
         sprite_troca(spr_player_pulo_baixo);
+    }
+    
+    // Se estiver no chão
+    if(chao)
+    {
+        // Muda de estado
+        estado = estado_parado;
     }
 }
 
